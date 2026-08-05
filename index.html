@@ -161,6 +161,53 @@ svg#sMap{display:block}
 .dt-val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;font-family:Georgia,serif;color:var(--red)}
 .new-btn{width:100%;font:inherit;font-size:14px;font-weight:600;background:transparent;color:var(--red);border:1.5px solid var(--red);border-radius:8px;padding:11px;cursor:pointer;transition:background .14s}
 .new-btn:hover{background:color-mix(in srgb,var(--red) 8%,transparent)}
+
+/* ── ADMIN ── */
+.hdr-admin-btn{margin-left:auto;font:inherit;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:5px;padding:4px 12px;cursor:pointer;transition:background .14s}
+.hdr-admin-btn:hover{background:rgba(255,255,255,.28)}
+.adm{display:none}.adm.vis{display:block}
+.adm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.adm-hdr h2{font-family:Georgia,serif;font-size:20px;font-weight:600;color:var(--red)}
+.adm-back{font:inherit;font-size:13px;color:var(--gold);background:none;border:1px solid var(--gold);border-radius:6px;padding:5px 12px;cursor:pointer}
+.adm-back:hover{background:color-mix(in srgb,var(--gold) 8%,transparent)}
+.adm-tabs{display:flex;border-bottom:2px solid var(--bd);margin-bottom:24px;overflow-x:auto}
+.adm-tab{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink3);background:none;border:none;padding:10px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.adm-tab.on{color:var(--red);border-bottom-color:var(--red);font-weight:600}
+.adm-tab:hover:not(.on){color:var(--ink2)}
+.adm-pane{display:none}.adm-pane.on{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--bg-c);border:1px solid var(--bd);border-radius:10px;padding:18px 20px}
+.kpi-lbl{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.kpi-val{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;font-family:Georgia,serif;color:var(--red);line-height:1}
+.kpi-sub{font-size:11.5px;color:var(--ink3);margin-top:5px}
+.kpi.ac{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 5%,var(--bg-c))}.kpi.ac .kpi-val{color:var(--gold)}
+.chart-wrap{background:var(--bg-c);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:20px}
+.chart-ttl{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.bar-lbl{font-size:11.5px;color:var(--ink2);width:140px;flex-shrink:0;text-align:right;line-height:1.3}
+.bar-lbl small{font-size:10px;color:var(--ink3)}
+.bar-track{flex:1;height:22px;background:var(--bg-m);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;min-width:2px}
+.bar-fill.fg{background:var(--gold)}.bar-fill.rt{background:var(--red)}
+.bar-num{font-size:11px;font-weight:600;color:#fff;white-space:nowrap;font-variant-numeric:tabular-nums}
+.adm-tw{overflow-x:auto;border:1px solid var(--bd);border-radius:10px;margin-bottom:20px}
+.adm-t{width:100%;border-collapse:collapse;font-size:13px}
+.adm-t th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:11px 14px;background:var(--bg-m);border-bottom:1px solid var(--bd);white-space:nowrap}
+.adm-t td{padding:10px 14px;border-bottom:1px solid var(--bd);color:var(--ink2);vertical-align:middle}
+.adm-t tr:last-child td{border-bottom:none}
+.adm-t tr:hover td{background:var(--bg-m)}
+.adm-t td.st{font-weight:600;color:var(--ink)}.adm-t td.mo{font-variant-numeric:tabular-nums;font-weight:600;color:var(--red);font-family:Georgia,serif}
+.occ-bar{height:6px;border-radius:3px;background:var(--bd);overflow:hidden;width:70px;display:inline-block;vertical-align:middle;margin-right:5px}
+.occ-f{height:100%;border-radius:3px}
+.occ-f.lo{background:#E09020}.occ-f.mi{background:var(--gold)}.occ-f.hi{background:#2CB356}
+.bdg{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.bdg.dn{background:color-mix(in srgb,#2CB356 15%,var(--bg-c));color:#1A8040}
+.bdg.up{background:color-mix(in srgb,var(--gold) 15%,var(--bg-c));color:#7A5000}
+.a2c{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start}
+@media(max-width:780px){.a2c{grid-template-columns:1fr}}
+.a2g{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:680px){.a2g{grid-template-columns:1fr}}
+.section-ttl{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px}
 </style>
 
 <div class="app">
@@ -169,6 +216,7 @@ svg#sMap{display:block}
       <span class="hdr-bar-logo">AEC Rosario</span>
       <span class="hdr-bar-sep"></span>
       <span class="hdr-bar-sub">Asociación Empleados de Comercio · Corrientes 450</span>
+      <button class="hdr-admin-btn" id="adminToggle">Panel Admin</button>
     </div>
     <div class="hdr-inner">
       <div class="hdr-eye">Teatro · Reservas en línea</div>
@@ -236,6 +284,24 @@ svg#sMap{display:block}
       <button class="new-btn" id="newBtn">Hacer otra reserva</button>
     </div>
   </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="adm" id="adminPanel">
+    <div class="adm-hdr">
+      <h2>Panel de Gestión — Teatro AEC</h2>
+      <button class="adm-back" id="admBack">← Volver al sistema de reservas</button>
+    </div>
+    <div class="adm-tabs">
+      <button class="adm-tab on" data-tab="resumen">Resumen</button>
+      <button class="adm-tab" data-tab="funciones">Por función</button>
+      <button class="adm-tab" data-tab="caja">Caja</button>
+      <button class="adm-tab" data-tab="reservas">Reservas</button>
+    </div>
+    <div class="adm-pane on" id="pane-resumen"></div>
+    <div class="adm-pane" id="pane-funciones"></div>
+    <div class="adm-pane" id="pane-caja"></div>
+    <div class="adm-pane" id="pane-reservas"></div>
+  </div>
 </div>
 
 <script>
@@ -253,6 +319,31 @@ var SHOWS=[
    dur:'65 min',price:6000,occ:.34,
    dates:[{id:'a',day:'Vie 31 jul',t:'20:00'},{id:'b',day:'Vie 7 ago',t:'20:00'},{id:'c',day:'Vie 14 ago',t:'20:00'}]}
 ];
+
+// ── Historial de funciones (simulado) ────────────────────────────────
+var PAST=[
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 19 jun',t:'20:00',price:5500,sold:98,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Sáb 28 jun',t:'18:00',price:7500,sold:142,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Dom 29 jun',t:'18:00',price:7500,sold:135,cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 26 jun',t:'20:00',price:5500,sold:118,cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 11 jul',t:'20:00',price:6000,sold:134,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Sáb 12 jul',t:'18:00',price:8000,sold:156,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Dom 13 jul',t:'18:00',price:8000,sold:148,cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 18 jul',t:'20:00',price:6000,sold:127,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Sáb 19 jul',t:'18:00',price:8000,sold:161,cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 25 jul',t:'20:00',price:6000,sold:143,cap:450}
+];
+var UPCOMING=[
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 31 jul',t:'20:00',price:6000,sold:153,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Sáb 1 ago', t:'18:00',price:8000,sold:117,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Dom 2 ago', t:'18:00',price:8000,sold:89, cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 7 ago', t:'20:00',price:6000,sold:102,cap:450},
+  {id:'fg',name:'Familia Gamuza',date:'Sáb 8 ago', t:'18:00',price:8000,sold:74, cap:450},
+  {id:'rt',name:'Ruffo y Truffa',date:'Vie 14 ago',t:'20:00',price:6000,sold:61, cap:450}
+];
+
+var sessionReservations=[];
+var resCounter=1;
 
 var ROWS=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','BB','CC','DD'];
 var COLS=15,AISLE=8;
@@ -460,12 +551,197 @@ document.getElementById('confBtn').addEventListener('click',function(){
   var tot=document.createElement('div');tot.className='done-tot';
   tot.innerHTML='<span class="dt-lbl">Total</span><span class="dt-val">'+fmt(total)+'</span>';
   rows.appendChild(tot);
+  // registrar en log de sesión
+  sessionReservations.push({
+    id:'RES-'+String(resCounter++).padStart(3,'0'),
+    show:cur.show.title,
+    showId:cur.show.id,
+    date:cur.date.day,
+    time:cur.date.t,
+    seats:chips.map(function(s){return s.row+s.num;}),
+    total:total,
+    ts:new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})
+  });
   goStep(3);
 });
 
 document.getElementById('newBtn').addEventListener('click',function(){
   sel=new Set();cur.show=null;cur.date=null;picked={};
   renderShows();goStep(1);
+});
+
+// ── Admin helpers ─────────────────────────────────────────────────────
+function totSold(){
+  var n=PAST.reduce(function(a,s){return a+s.sold;},0);
+  sessionReservations.forEach(function(r){n+=r.seats.length;});
+  return n;
+}
+function totRev(){
+  var n=PAST.reduce(function(a,s){return a+s.sold*s.price;},0);
+  sessionReservations.forEach(function(r){n+=r.total;});
+  return n;
+}
+function avgOcc(){
+  var sum=PAST.reduce(function(a,s){return a+s.sold/s.cap;},0);
+  return Math.round(sum/PAST.length*100);
+}
+function tbl(cols,rows){
+  var h='<div class="adm-tw"><table class="adm-t"><thead><tr>';
+  cols.forEach(function(c){h+='<th>'+c+'</th>';});
+  h+='</tr></thead><tbody>';
+  rows.forEach(function(r){
+    h+='<tr>';
+    r.forEach(function(cell){h+='<td'+(cell&&cell.cls?' class="'+cell.cls+'"':'')+'>'+((cell&&cell.v!==undefined)?cell.v:cell)+'</td>';});
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  return h;
+}
+
+// ── Admin panes ───────────────────────────────────────────────────────
+function renderResumen(){
+  var sold=totSold(), rev=totRev(), occ=avgOcc();
+  var sesTotal=sessionReservations.reduce(function(a,r){return a+r.total;},0);
+  var sesSold=sessionReservations.reduce(function(a,r){return a+r.seats.length;},0);
+
+  var kpi='<div class="kpi-row">'
+    +'<div class="kpi"><div class="kpi-lbl">Entradas vendidas</div><div class="kpi-val">'+sold.toLocaleString('es-AR')+'</div><div class="kpi-sub">historial + sesión actual</div></div>'
+    +'<div class="kpi ac"><div class="kpi-lbl">Ingresos totales</div><div class="kpi-val">'+fmt(rev)+'</div><div class="kpi-sub">historial + sesión actual</div></div>'
+    +'<div class="kpi"><div class="kpi-lbl">Ocupación promedio</div><div class="kpi-val">'+occ+'%</div><div class="kpi-sub">funciones realizadas</div></div>'
+    +'<div class="kpi"><div class="kpi-lbl">Esta sesión</div><div class="kpi-val">'+sesSold+'</div><div class="kpi-sub">'+fmt(sesTotal)+' recaudados</div></div>'
+    +'</div>';
+
+  var maxR=Math.max.apply(null,PAST.map(function(s){return s.sold*s.price;}));
+  var chart='<div class="chart-wrap"><div class="chart-ttl">Ingresos por función — historial</div>';
+  PAST.slice().reverse().forEach(function(s){
+    var r=s.sold*s.price, pct=Math.round(r/maxR*100);
+    chart+='<div class="bar-row">'
+      +'<div class="bar-lbl">'+s.name.split(':')[0]+'<br><small>'+s.date+'</small></div>'
+      +'<div class="bar-track"><div class="bar-fill '+s.id+'" style="width:'+pct+'%"><span class="bar-num">'+fmt(r)+'</span></div></div>'
+      +'</div>';
+  });
+  chart+='</div>';
+
+  var resRows=sessionReservations.length
+    ? sessionReservations.slice().reverse().slice(0,8).map(function(r){
+        return [{v:r.ts},{v:r.show,cls:'st'},{v:r.date},{v:r.seats.join(' · ')},{v:fmt(r.total),cls:'mo'}];
+      })
+    : [[{v:'—',cls:''},{v:'Sin reservas en esta sesión',cls:''},{v:''},{v:''},{}]];
+
+  var resTable='<div class="section-ttl">Últimas reservas</div>'
+    +tbl(['Hora','Obra','Fecha','Butacas','Total'],resRows);
+
+  document.getElementById('pane-resumen').innerHTML=kpi+'<div class="a2c">'+chart+'<div>'+resTable+'</div></div>';
+}
+
+function renderFunciones(){
+  var all=PAST.map(function(s){return {s:s,done:true};})
+    .concat(UPCOMING.map(function(s){return {s:s,done:false};}));
+  var rows=all.map(function(item){
+    var s=item.s, pct=Math.round(s.sold/s.cap*100);
+    var cls=pct<30?'lo':pct<60?'mi':'hi';
+    var occ='<span class="occ-bar"><span class="occ-f '+cls+'" style="width:'+pct+'%"></span></span>'+pct+'%';
+    return [
+      {v:'<span class="bdg '+(item.done?'dn':'up')+'">'+(item.done?'Realizada':'Próxima')+'</span>'},
+      {v:s.name,cls:'st'},{v:s.date},{v:s.t},
+      {v:s.sold+' / '+s.cap},{v:occ},{v:fmt(s.sold*s.price),cls:'mo'}
+    ];
+  });
+  document.getElementById('pane-funciones').innerHTML=
+    tbl(['Estado','Obra','Fecha','Hora','Vendidas / Cap.','Ocupación','Ingresos'],rows);
+}
+
+function renderCaja(){
+  var byMonth={}, byShow={};
+  PAST.forEach(function(s){
+    var m=s.date.split(' ')[2];
+    if(!byMonth[m])byMonth[m]={rev:0,t:0,n:0};
+    byMonth[m].rev+=s.sold*s.price; byMonth[m].t+=s.sold; byMonth[m].n++;
+    if(!byShow[s.id])byShow[s.id]={name:s.name.split(':')[0],rev:0,t:0,n:0};
+    byShow[s.id].rev+=s.sold*s.price; byShow[s.id].t+=s.sold; byShow[s.id].n++;
+  });
+  sessionReservations.forEach(function(r){
+    var m=r.date.split(' ')[2]||'ago';
+    if(!byMonth[m])byMonth[m]={rev:0,t:0,n:0};
+    byMonth[m].rev+=r.total; byMonth[m].t+=r.seats.length;
+    if(!byShow[r.showId])byShow[r.showId]={name:r.show.split(':')[0],rev:0,t:0,n:0};
+    byShow[r.showId].rev+=r.total; byShow[r.showId].t+=r.seats.length;
+  });
+
+  var rev=totRev(), sold=totSold();
+  var kpi='<div class="kpi-row">'
+    +'<div class="kpi ac"><div class="kpi-lbl">Recaudación total</div><div class="kpi-val">'+fmt(rev)+'</div><div class="kpi-sub">todas las funciones</div></div>'
+    +'<div class="kpi"><div class="kpi-lbl">Ticket promedio</div><div class="kpi-val">'+fmt(sold?Math.round(rev/sold):0)+'</div><div class="kpi-sub">por entrada vendida</div></div>'
+    +'<div class="kpi"><div class="kpi-lbl">Total entradas</div><div class="kpi-val">'+sold.toLocaleString('es-AR')+'</div><div class="kpi-sub">todas las funciones</div></div>'
+    +'</div>';
+
+  var MN={jun:'Junio 2026',jul:'Julio 2026',ago:'Agosto 2026'};
+  var mRows=Object.keys(byMonth).map(function(m){
+    var d=byMonth[m];
+    return [{v:MN[m]||m,cls:'st'},{v:d.n||'—'},{v:d.t},{v:fmt(d.rev),cls:'mo'}];
+  });
+  var sRows=Object.values(byShow).map(function(d){
+    return [{v:d.name,cls:'st'},{v:d.n||'—'},{v:d.t},{v:fmt(d.rev),cls:'mo'}];
+  });
+
+  document.getElementById('pane-caja').innerHTML=kpi
+    +'<div class="a2g">'
+    +'<div><div class="section-ttl">Por mes</div>'+tbl(['Mes','Funciones','Entradas','Ingresos'],mRows)+'</div>'
+    +'<div><div class="section-ttl">Por obra</div>'+tbl(['Obra','Funciones','Entradas','Ingresos'],sRows)+'</div>'
+    +'</div>';
+}
+
+function renderReservas(){
+  var pane=document.getElementById('pane-reservas');
+  if(!sessionReservations.length){
+    pane.innerHTML='<p style="color:var(--ink3);padding:40px;text-align:center">Las reservas que hagas en esta sesión aparecen acá en tiempo real.</p>';
+    return;
+  }
+  var rows=sessionReservations.slice().reverse().map(function(r){
+    return [
+      {v:'<span style="font-family:monospace;font-size:12px;color:var(--ink3)">'+r.id+'</span>'},
+      {v:r.ts},{v:r.show,cls:'st'},{v:r.date+' '+r.time},
+      {v:'<span style="font-family:monospace;font-size:12px">'+r.seats.join(' · ')+'</span>'},
+      {v:r.seats.length},{v:fmt(r.total),cls:'mo'}
+    ];
+  });
+  pane.innerHTML=tbl(['ID','Hora','Obra','Función','Butacas','Cant.','Total'],rows);
+}
+
+function renderAdminPane(tab){
+  if(tab==='resumen')renderResumen();
+  else if(tab==='funciones')renderFunciones();
+  else if(tab==='caja')renderCaja();
+  else if(tab==='reservas')renderReservas();
+}
+
+function showAdmin(){
+  ['s1','s2','s3'].forEach(function(id){document.getElementById(id).classList.remove('vis');});
+  document.getElementById('adminPanel').classList.add('vis');
+  ['p1','p2','p3'].forEach(function(id){
+    document.getElementById(id).classList.remove('active','done');
+  });
+  // reset tabs
+  document.querySelectorAll('.adm-tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelector('.adm-tab[data-tab="resumen"]').classList.add('on');
+  document.querySelectorAll('.adm-pane').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('pane-resumen').classList.add('on');
+  renderAdminPane('resumen');
+}
+
+document.getElementById('adminToggle').addEventListener('click',showAdmin);
+document.getElementById('admBack').addEventListener('click',function(){
+  document.getElementById('adminPanel').classList.remove('vis');
+  renderShows();goStep(1);
+});
+document.getElementById('adminPanel').addEventListener('click',function(e){
+  var tab=e.target.getAttribute('data-tab');
+  if(!tab)return;
+  document.querySelectorAll('.adm-tab').forEach(function(t){t.classList.remove('on');});
+  e.target.classList.add('on');
+  document.querySelectorAll('.adm-pane').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('pane-'+tab).classList.add('on');
+  renderAdminPane(tab);
 });
 
 renderShows();goStep(1);
