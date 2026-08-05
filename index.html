@@ -626,7 +626,7 @@ function renderResumen(){
     ? sessionReservations.slice().reverse().slice(0,8).map(function(r){
         return [{v:r.ts},{v:r.show,cls:'st'},{v:r.date},{v:r.seats.join(' · ')},{v:fmt(r.total),cls:'mo'}];
       })
-    : [[{v:'—',cls:''},{v:'Sin reservas en esta sesión',cls:''},{v:''},{v:''},{}]];
+    : [[{v:'—'},{v:'Sin reservas en esta sesión'},{v:''},{v:''},{v:'—'}]];
 
   var resTable='<div class="section-ttl">Últimas reservas</div>'
     +tbl(['Hora','Obra','Fecha','Butacas','Total'],resRows);
