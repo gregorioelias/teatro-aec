@@ -36,6 +36,8 @@ export default function Home() {
   const [confirmacion, setConfirmacion] = useState<{ codigo: string; total: number; butacas: string[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [comprador, setComprador] = useState({ nombre: '', email: '' });
 
   useEffect(() => {
     fetch('/api/init').then(() => fetch('/api/obras').then(r => r.json()).then(setObras));
@@ -71,11 +73,12 @@ export default function Home() {
       const res = await fetch('/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ funcion_id: curFuncion.id, butacas: Array.from(sel) }),
+        body: JSON.stringify({ funcion_id: curFuncion.id, butacas: Array.from(sel), nombre: comprador.nombre || null, email: comprador.email || null }),
       });
       const data = await res.json();
       if (!res.ok) { alert(data.error || 'Error al reservar'); return; }
       setConfirmacion(data);
+      setModalOpen(false);
       setStep(3);
     } finally {
       setLoading(false);
@@ -85,6 +88,7 @@ export default function Home() {
   const reset = () => {
     setStep(1); setCurObra(null); setCurFuncion(null);
     setSel(new Set()); setConfirmacion(null); setPicked({});
+    setComprador({ nombre: '', email: '' }); setModalOpen(false);
     fetch('/api/obras').then(r => r.json()).then(setObras);
   };
 
@@ -140,6 +144,8 @@ export default function Home() {
   const avail = ROWS.length * COLS - ocupadas.size - sel.size;
 
   if (showAdmin) return <AdminPanel onBack={() => setShowAdmin(false)} />;
+
+  const modalInp: React.CSSProperties = { width: '100%', padding: '10px 12px', border: '1px solid var(--bd)', borderRadius: 8, fontSize: 14, background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'inherit' };
 
   return (
     <div style={{ maxWidth: 1060, margin: '0 auto', padding: '24px 18px 56px' }}>
@@ -242,9 +248,9 @@ export default function Home() {
                 <span style={{ fontSize: 13, color: 'var(--ink2)' }}>Total</span>
                 <span style={{ fontSize: 20, fontWeight: 700, fontVariantNumeric: 'tabular-nums', fontFamily: 'Georgia,serif' }}>{fmt(sel.size * curObra.precio)}</span>
               </div>
-              <button disabled={!sel.size || loading} onClick={confirmar}
-                style={{ width: '100%', fontFamily: 'inherit', fontSize: 14, fontWeight: 600, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, cursor: sel.size && !loading ? 'pointer' : 'not-allowed', opacity: sel.size && !loading ? 1 : .35 }}>
-                {loading ? 'Procesando...' : 'Confirmar reserva'}
+              <button disabled={!sel.size} onClick={() => setModalOpen(true)}
+                style={{ width: '100%', fontFamily: 'inherit', fontSize: 14, fontWeight: 600, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, cursor: sel.size ? 'pointer' : 'not-allowed', opacity: sel.size ? 1 : .35 }}>
+                Confirmar reserva
               </button>
             </div>
             <div style={{ background: 'var(--bg-c)', border: '1px solid var(--bd)', borderRadius: 12, padding: 18 }}>
@@ -260,6 +266,39 @@ export default function Home() {
         </div>
       )}
 
+      {/* modal datos comprador */}
+      {modalOpen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', display: 'grid', placeItems: 'center', zIndex: 100, padding: 18 }}>
+          <div style={{ background: 'var(--bg-c)', border: '1px solid var(--bd)', borderRadius: 16, padding: 32, width: '100%', maxWidth: 420 }}>
+            <h3 style={{ fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 600, marginBottom: 6 }}>Datos del comprador</h3>
+            <p style={{ fontSize: 13, color: 'var(--ink3)', marginBottom: 22 }}>Opcional — para enviarte la confirmación.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+              <input
+                placeholder="Nombre completo"
+                value={comprador.nombre}
+                onChange={e => setComprador(c => ({ ...c, nombre: e.target.value }))}
+                style={modalInp}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={comprador.email}
+                onChange={e => setComprador(c => ({ ...c, email: e.target.value }))}
+                style={modalInp}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setModalOpen(false)} style={{ flex: 1, padding: 11, background: 'transparent', color: 'var(--ink3)', border: '1px solid var(--bd)', borderRadius: 8, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit' }}>
+                Cancelar
+              </button>
+              <button onClick={confirmar} disabled={loading} style={{ flex: 2, padding: 11, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? .5 : 1, fontFamily: 'inherit' }}>
+                {loading ? 'Procesando...' : 'Confirmar reserva'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* step 3 */}
       {step === 3 && confirmacion && (
         <div style={{ maxWidth: 460, margin: '0 auto', background: 'var(--bg-c)', border: '1px solid var(--bd)', borderRadius: 16, padding: 36 }}>
@@ -267,13 +306,14 @@ export default function Home() {
           <h2 style={{ fontFamily: 'Georgia,serif', fontSize: 21, fontWeight: 600, marginBottom: 5 }}>¡Reserva realizada!</h2>
           <p style={{ fontSize: 13.5, color: 'var(--ink2)', marginBottom: 22, lineHeight: 1.5 }}>Esta es tu confirmación. Presentá tu DNI en boletería el día de la función.</p>
           <div style={{ border: '1px solid var(--bd)', borderRadius: 8, overflow: 'hidden', marginBottom: 20 }}>
-            {[
+            {([
               ['Código', confirmacion.codigo],
-              ['Obra', curObra?.titulo],
+              ...(comprador.nombre ? [['Nombre', comprador.nombre]] : []),
+              ['Obra', curObra?.titulo ?? ''],
               ['Fecha', `${curFuncion?.fecha} — ${curFuncion?.hora} hs`],
               ['Butacas', confirmacion.butacas.join(' · ')],
               ['Cantidad', `${confirmacion.butacas.length} butaca${confirmacion.butacas.length !== 1 ? 's' : ''}`],
-            ].map(([l, v]) => (
+            ] as [string, string][]).map(([l, v]) => (
               <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '11px 15px', borderBottom: '1px solid var(--bd)', gap: 14 }}>
                 <span style={{ fontSize: 12.5, color: 'var(--ink3)', flexShrink: 0 }}>{l}</span>
                 <span style={{ fontSize: 13, fontWeight: 500, textAlign: 'right' }}>{v}</span>
