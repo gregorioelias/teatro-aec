@@ -8,6 +8,7 @@ export async function POST(req: Request) {
   const { reserva_id, codigo, titulo, fecha, hora, butacas, cantidad, precio, total, nombre, email } = body;
 
   const appUrl = process.env.APP_URL || 'http://localhost:3000';
+  const isLocalhost = appUrl.includes('localhost') || appUrl.includes('127.0.0.1');
 
   try {
     const pref = await new Preference(mp).create({
@@ -30,7 +31,8 @@ export async function POST(req: Request) {
           failure: `${appUrl}/pago?estado=rechazado&reserva=${codigo}`,
           pending: `${appUrl}/pago?estado=pendiente&reserva=${codigo}`,
         },
-        auto_return: 'approved',
+        // auto_return solo funciona con URLs públicas (no localhost)
+        ...(isLocalhost ? {} : { auto_return: 'approved' }),
         notification_url: `${appUrl}/api/pago/webhook`,
         metadata: { reserva_id, codigo, total },
       },
