@@ -17,20 +17,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 });
   }
 
-  const obraRes = await db.execute({
-    sql: 'INSERT INTO obras (titulo, genero, descripcion, duracion, precio) VALUES (?,?,?,?,?)',
-    args: [titulo, genero || '', descripcion || '', duracion || '', precio],
-  });
-  const obraId = obraRes.lastInsertRowid;
-
-  for (const f of funciones) {
-    await db.execute({
-      sql: 'INSERT INTO funciones (obra_id, fecha, hora, capacidad) VALUES (?,?,?,?)',
-      args: [obraId, f.fecha, f.hora, f.capacidad || 450],
+  try {
+    const obraRes = await db.execute({
+      sql: 'INSERT INTO obras (titulo, genero, descripcion, duracion, precio) VALUES (?,?,?,?,?)',
+      args: [titulo, genero || '', descripcion || '', duracion || '', precio],
     });
-  }
+    const obraId = obraRes.lastInsertRowid;
 
-  return NextResponse.json({ id: obraId });
+    for (const f of funciones) {
+      await db.execute({
+        sql: 'INSERT INTO funciones (obra_id, fecha, hora, capacidad) VALUES (?,?,?,?)',
+        args: [obraId, f.fecha, f.hora, f.capacidad || 450],
+      });
+    }
+
+    return NextResponse.json({ id: obraId });
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: Request) {

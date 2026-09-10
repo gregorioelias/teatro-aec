@@ -14,6 +14,13 @@ const SW = 13, SH = 18, AH = 8, HS = 17, VS = 24, AG = 18, LW = 22, TH = 18;
 function fmt(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
 }
+function formatFecha(s: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const d = new Date(s + 'T12:00:00');
+    return d.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+  return s;
+}
 function seatX(s: number) { return LW + (s - 1) * HS + (s > AISLE ? AG : 0); }
 function seatY(r: number) { return TH + r * VS; }
 function svgW() { return seatX(COLS) + SW / 2 + LW + 6; }
@@ -92,7 +99,7 @@ export default function Home() {
         }),
       });
       const mpData = await mpRes.json();
-      if (!mpRes.ok || !mpData.init_point) { alert('Error al iniciar el pago'); return; }
+      if (!mpRes.ok || !mpData.init_point) { alert('Error al iniciar el pago: ' + (mpData.error || 'respuesta inválida')); return; }
 
       // 3. redirigir al checkout de MercadoPago
       window.location.href = mpData.init_point;
@@ -215,7 +222,7 @@ export default function Home() {
                   return (
                     <button key={funcId} onClick={() => setPicked(p => ({ ...p, [obraKey]: funcId }))}
                       style={{ fontFamily: 'inherit', fontSize: 13, border: `1px solid ${isSelected ? 'var(--red)' : 'var(--bd)'}`, borderRadius: 6, padding: '6px 10px', background: isSelected ? 'color-mix(in srgb,var(--red) 8%,var(--bg))' : 'var(--bg)', color: isSelected ? 'var(--red)' : 'var(--ink2)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                      <span style={{ fontWeight: 600, color: isSelected ? 'var(--red)' : 'var(--ink)' }}>{f.fecha}</span>
+                      <span style={{ fontWeight: 600, color: isSelected ? 'var(--red)' : 'var(--ink)' }}>{formatFecha(f.fecha)}</span>
                       <span style={{ fontSize: 11, color: isSelected ? 'var(--red)' : 'var(--ink3)' }}>{f.hora}</span>
                     </button>
                   );
@@ -237,7 +244,7 @@ export default function Home() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
               <div>
                 <div style={{ fontSize: 14.5, fontWeight: 600 }}>{curObra.titulo}</div>
-                <div style={{ fontSize: 12.5, color: 'var(--ink2)', marginTop: 2 }}>{curFuncion.fecha} — {curFuncion.hora} hs · {fmt(curObra.precio)} por butaca</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink2)', marginTop: 2 }}>{formatFecha(curFuncion.fecha)} — {curFuncion.hora} hs · {fmt(curObra.precio)} por butaca</div>
               </div>
               <button onClick={() => { setSel(new Set()); setStep(1); }} style={{ fontFamily: 'inherit', fontSize: 13, color: 'var(--red)', background: 'none', border: '1px solid var(--red)', borderRadius: 6, padding: '5px 11px', cursor: 'pointer' }}>← Volver</button>
             </div>
@@ -384,13 +391,21 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
   }, [authed, tab, cargarMetricas, cargarObras]);
 
   const crearObra = async () => {
+    if (!form.titulo || !form.precio) { setMsg('Error: completá título y precio'); return; }
+    if (form.funciones.some(f => !f.fecha || !f.hora)) { setMsg('Error: completá fecha y hora de todas las funciones'); return; }
     const res = await fetch('/api/admin/obras', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': pass },
       body: JSON.stringify({ ...form, precio: Number(form.precio), funciones: form.funciones.map(f => ({ ...f, capacidad: Number(f.capacidad) })) }),
     });
-    if (res.ok) { setMsg('Obra creada exitosamente'); setForm({ titulo: '', genero: '', descripcion: '', duracion: '', precio: '', funciones: [{ fecha: '', hora: '', capacidad: '450' }] }); cargarObras(); }
-    else setMsg('Error al crear la obra');
+    const data = await res.json();
+    if (res.ok) {
+      setMsg('Obra creada exitosamente');
+      setForm({ titulo: '', genero: '', descripcion: '', duracion: '', precio: '', funciones: [{ fecha: '', hora: '', capacidad: '450' }] });
+      cargarObras();
+    } else {
+      setMsg('Error: ' + (data.error || 'no se pudo crear la obra'));
+    }
   };
 
   const eliminarObra = async (id: number) => {
@@ -520,9 +535,9 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
             </div>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)', marginBottom: 4 }}>Funciones</div>
             {form.funciones.map((fn, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 8, alignItems: 'center' }}>
-                <input placeholder="Fecha (ej: Sáb 15 ago)" value={fn.fecha} onChange={e => setForm(f => { const fs = [...f.funciones]; fs[i] = { ...fs[i], fecha: e.target.value }; return { ...f, funciones: fs }; })} style={inp()} />
-                <input placeholder="Hora (ej: 20:00)" value={fn.hora} onChange={e => setForm(f => { const fs = [...f.funciones]; fs[i] = { ...fs[i], hora: e.target.value }; return { ...f, funciones: fs }; })} style={inp()} />
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr auto', gap: 8, alignItems: 'center' }}>
+                <input type="date" value={fn.fecha} onChange={e => setForm(f => { const fs = [...f.funciones]; fs[i] = { ...fs[i], fecha: e.target.value }; return { ...f, funciones: fs }; })} style={inp()} />
+                <input type="time" value={fn.hora} onChange={e => setForm(f => { const fs = [...f.funciones]; fs[i] = { ...fs[i], hora: e.target.value }; return { ...f, funciones: fs }; })} style={inp()} />
                 <input placeholder="Capacidad" type="number" value={fn.capacidad} onChange={e => setForm(f => { const fs = [...f.funciones]; fs[i] = { ...fs[i], capacidad: e.target.value }; return { ...f, funciones: fs }; })} style={inp()} />
                 {form.funciones.length > 1 && <button onClick={() => setForm(f => ({ ...f, funciones: f.funciones.filter((_, j) => j !== i) }))} style={{ padding: '9px 12px', border: '1px solid var(--bd)', borderRadius: 8, cursor: 'pointer', background: 'var(--bg)', color: 'var(--ink3)' }}>×</button>}
               </div>

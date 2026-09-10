@@ -9,31 +9,36 @@ export async function POST(req: Request) {
 
   const appUrl = process.env.APP_URL || 'http://localhost:3000';
 
-  const pref = await new Preference(mp).create({
-    body: {
-      external_reference: String(reserva_id),
-      items: [{
-        id: codigo,
-        title: `${titulo} — ${fecha} ${hora}`,
-        description: `${cantidad} butaca${cantidad !== 1 ? 's' : ''}: ${butacas.join(', ')}`,
-        quantity: cantidad,
-        unit_price: precio,
-        currency_id: 'ARS',
-      }],
-      payer: {
-        name: nombre || undefined,
-        email: email || undefined,
+  try {
+    const pref = await new Preference(mp).create({
+      body: {
+        external_reference: String(reserva_id),
+        items: [{
+          id: codigo,
+          title: `${titulo} — ${fecha} ${hora}`,
+          description: `${cantidad} butaca${cantidad !== 1 ? 's' : ''}: ${butacas.join(', ')}`,
+          quantity: cantidad,
+          unit_price: precio,
+          currency_id: 'ARS',
+        }],
+        payer: {
+          name: nombre || undefined,
+          email: email || undefined,
+        },
+        back_urls: {
+          success: `${appUrl}/pago?estado=aprobado&reserva=${codigo}`,
+          failure: `${appUrl}/pago?estado=rechazado&reserva=${codigo}`,
+          pending: `${appUrl}/pago?estado=pendiente&reserva=${codigo}`,
+        },
+        auto_return: 'approved',
+        notification_url: `${appUrl}/api/pago/webhook`,
+        metadata: { reserva_id, codigo, total },
       },
-      back_urls: {
-        success: `${appUrl}/pago?estado=aprobado&reserva=${codigo}`,
-        failure: `${appUrl}/pago?estado=rechazado&reserva=${codigo}`,
-        pending: `${appUrl}/pago?estado=pendiente&reserva=${codigo}`,
-      },
-      auto_return: 'approved',
-      notification_url: `${appUrl}/api/pago/webhook`,
-      metadata: { reserva_id, codigo, total },
-    },
-  });
+    });
 
-  return NextResponse.json({ init_point: pref.init_point, id: pref.id });
+    return NextResponse.json({ init_point: pref.init_point, id: pref.id });
+  } catch (e) {
+    console.error('MercadoPago error:', e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
