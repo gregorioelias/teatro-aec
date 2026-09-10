@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Fragment } from 'react';
 
 type Funcion = { id: number; fecha: string; hora: string; capacidad: number };
 type Obra = {
@@ -184,13 +184,13 @@ export default function Home() {
       {/* progress */}
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 26 }}>
         {[1, 2, 3].map((n, i) => (
-          <>
-            {i > 0 && <div key={`conn-${n}`} style={{ flex: 1, height: 1, background: 'var(--bd)', maxWidth: 32 }} />}
-            <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: step === n ? 'var(--red)' : step > n ? 'var(--gold)' : 'var(--ink3)', padding: '5px 13px 5px 8px', borderRadius: 99, border: `1px solid ${step === n ? 'var(--red)' : step > n ? 'var(--gold)' : 'var(--bd)'}`, background: 'var(--bg-c)', fontWeight: step === n ? 600 : 400, whiteSpace: 'nowrap' }}>
+          <Fragment key={n}>
+            {i > 0 && <div style={{ flex: 1, height: 1, background: 'var(--bd)', maxWidth: 32 }} />}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: step === n ? 'var(--red)' : step > n ? 'var(--gold)' : 'var(--ink3)', padding: '5px 13px 5px 8px', borderRadius: 99, border: `1px solid ${step === n ? 'var(--red)' : step > n ? 'var(--gold)' : 'var(--bd)'}`, background: 'var(--bg-c)', fontWeight: step === n ? 600 : 400, whiteSpace: 'nowrap' }}>
               <span style={{ width: 19, height: 19, borderRadius: '50%', background: step === n ? 'var(--red)' : step > n ? 'var(--gold)' : 'var(--bd)', display: 'grid', placeItems: 'center', fontSize: 10, fontWeight: 700, color: step >= n ? '#fff' : 'inherit', flexShrink: 0 }}>{n}</span>
               {['Elegir función', 'Seleccionar butacas', 'Confirmación'][n - 1]}
             </div>
-          </>
+          </Fragment>
         ))}
       </div>
 
