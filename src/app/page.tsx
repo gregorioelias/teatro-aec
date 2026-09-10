@@ -67,19 +67,35 @@ export default function Home() {
   };
 
   const confirmar = async () => {
-    if (!curFuncion || !sel.size) return;
+    if (!curFuncion || !curObra || !sel.size) return;
     setLoading(true);
     try {
-      const res = await fetch('/api/reservas', {
+      // 1. crear reserva en DB con estado pendiente
+      const resRes = await fetch('/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ funcion_id: curFuncion.id, butacas: Array.from(sel), nombre: comprador.nombre || null, email: comprador.email || null }),
       });
-      const data = await res.json();
-      if (!res.ok) { alert(data.error || 'Error al reservar'); return; }
-      setConfirmacion(data);
-      setModalOpen(false);
-      setStep(3);
+      const reserva = await resRes.json();
+      if (!resRes.ok) { alert(reserva.error || 'Error al reservar'); return; }
+
+      // 2. crear preferencia en MercadoPago
+      const mpRes = await fetch('/api/pago/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reserva_id: reserva.id, codigo: reserva.codigo,
+          titulo: reserva.titulo, fecha: reserva.fecha, hora: reserva.hora,
+          butacas: reserva.butacas, cantidad: reserva.cantidad,
+          precio: reserva.precio, total: reserva.total,
+          nombre: comprador.nombre || null, email: comprador.email || null,
+        }),
+      });
+      const mpData = await mpRes.json();
+      if (!mpRes.ok || !mpData.init_point) { alert('Error al iniciar el pago'); return; }
+
+      // 3. redirigir al checkout de MercadoPago
+      window.location.href = mpData.init_point;
     } finally {
       setLoading(false);
     }
