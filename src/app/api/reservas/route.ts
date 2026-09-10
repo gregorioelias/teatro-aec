@@ -15,7 +15,11 @@ export async function POST(req: Request) {
 
   const placeholders = butacas.map(() => '?').join(',');
   const ocupadas = await db.execute({
-    sql: `SELECT butaca FROM butacas_ocupadas WHERE funcion_id = ? AND butaca IN (${placeholders})`,
+    sql: `SELECT bo.butaca FROM butacas_ocupadas bo
+          JOIN reservas r ON r.id = bo.reserva_id
+          WHERE bo.funcion_id = ? AND bo.butaca IN (${placeholders})
+            AND (r.estado = 'confirmada'
+                 OR (r.estado = 'pendiente' AND r.creado_en > datetime('now', '-20 minutes')))`,
     args: [funcion_id, ...butacas],
   });
 
