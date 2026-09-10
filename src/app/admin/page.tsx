@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/fetcher';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -89,7 +90,7 @@ export default function AdminPanel() {
 
   const cargar = useCallback(async () => {
     setLoading(true);
-    const res = await fetch('/api/admin/metricas');
+    const res = await apiFetch('/api/admin/metricas');
     if (res.status === 401) { router.push('/admin/login'); return; }
     const data = await res.json();
     setTotales(data.totales);
@@ -103,12 +104,12 @@ export default function AdminPanel() {
   useEffect(() => { cargar(); }, [cargar]);
 
   const confirmarReserva = async (id: number) => {
-    await fetch('/api/admin/confirmar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reserva_id: id }) });
+    await apiFetch('/api/admin/confirmar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reserva_id: id }) });
     cargar();
   };
 
   const logout = async () => {
-    await fetch('/api/admin/auth', { method: 'DELETE' });
+    await apiFetch('/api/admin/auth', { method: 'DELETE' });
     router.push('/admin/login');
   };
 
@@ -116,7 +117,7 @@ export default function AdminPanel() {
     if (!form.titulo || !form.precio) { setMsg('error:Completá título y precio'); return; }
     if (form.funciones.some(f => !f.fecha || !f.hora)) { setMsg('error:Completá fecha y hora de todas las funciones'); return; }
     try {
-      const res = await fetch('/api/admin/obras', {
+      const res = await apiFetch('/api/admin/obras', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, precio: Number(form.precio), funciones: form.funciones.map(f => ({ ...f, capacidad: Number(f.capacidad) })) }),
@@ -136,7 +137,7 @@ export default function AdminPanel() {
 
   const desactivarObra = async (id: number, titulo: string) => {
     if (!confirm(`¿Desactivar "${titulo}"? Las reservas existentes no se afectan.`)) return;
-    await fetch(`/api/admin/obras?id=${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/admin/obras?id=${id}`, { method: 'DELETE' });
     cargar();
   };
 

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback, Fragment } from 'react';
+import { apiFetch } from '@/lib/fetcher';
 
 type Funcion = { id: number; fecha: string; hora: string; capacidad: number };
 type Obra = {
@@ -46,12 +47,12 @@ export default function Home() {
   const [comprador, setComprador] = useState({ nombre: '', email: '' });
 
   useEffect(() => {
-    fetch('/api/init').catch(() => {});
-    fetch('/api/obras').then(r => r.json()).then(setObras).catch(console.error);
+    apiFetch('/api/init').catch(() => {});
+    apiFetch('/api/obras').then(r => r.json()).then(setObras).catch(console.error);
   }, []);
 
   const cargarButacas = useCallback(async (funcionId: number) => {
-    const res = await fetch(`/api/butacas?funcion_id=${funcionId}`);
+    const res = await apiFetch(`/api/butacas?funcion_id=${funcionId}`);
     const data: string[] = await res.json();
     setOcupadas(new Set(data));
   }, []);
@@ -78,7 +79,7 @@ export default function Home() {
     setLoading(true);
     try {
       // 1. crear reserva en DB con estado pendiente
-      const resRes = await fetch('/api/reservas', {
+      const resRes = await apiFetch('/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ funcion_id: curFuncion.id, butacas: Array.from(sel), nombre: comprador.nombre || null, email: comprador.email || null }),
@@ -87,7 +88,7 @@ export default function Home() {
       if (!resRes.ok) { alert(reserva.error || 'Error al reservar'); return; }
 
       // 2. crear preferencia en MercadoPago
-      const mpRes = await fetch('/api/pago/crear', {
+      const mpRes = await apiFetch('/api/pago/crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,7 +113,7 @@ export default function Home() {
     setStep(1); setCurObra(null); setCurFuncion(null);
     setSel(new Set()); setConfirmacion(null); setPicked({});
     setComprador({ nombre: '', email: '' }); setModalOpen(false);
-    fetch('/api/obras').then(r => r.json()).then(setObras);
+    apiFetch('/api/obras').then(r => r.json()).then(setObras);
   };
 
   // SVG seat map
@@ -367,18 +368,18 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
   const [msg, setMsg] = useState('');
 
   const login = async () => {
-    const res = await fetch('/api/admin/metricas', { headers: { 'x-admin-password': pass } });
+    const res = await apiFetch('/api/admin/metricas', { headers: { 'x-admin-password': pass } });
     if (res.ok) { setMetricas(await res.json()); setAuthed(true); }
     else alert('Contraseña incorrecta');
   };
 
   const cargarMetricas = useCallback(async () => {
-    const res = await fetch('/api/admin/metricas', { headers: { 'x-admin-password': pass } });
+    const res = await apiFetch('/api/admin/metricas', { headers: { 'x-admin-password': pass } });
     if (res.ok) setMetricas(await res.json());
   }, [pass]);
 
   const cargarObras = useCallback(async () => {
-    const res = await fetch('/api/obras');
+    const res = await apiFetch('/api/obras');
     setObras(await res.json());
   }, []);
 
@@ -390,7 +391,7 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
     if (!form.titulo || !form.precio) { setMsg('Error: completá título y precio'); return; }
     if (form.funciones.some(f => !f.fecha || !f.hora)) { setMsg('Error: completá fecha y hora de todas las funciones'); return; }
     try {
-      const res = await fetch('/api/admin/obras', {
+      const res = await apiFetch('/api/admin/obras', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': pass },
         body: JSON.stringify({ ...form, precio: Number(form.precio), funciones: form.funciones.map(f => ({ ...f, capacidad: Number(f.capacidad) })) }),
@@ -410,7 +411,7 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
 
   const eliminarObra = async (id: number) => {
     if (!confirm('¿Eliminar esta obra?')) return;
-    await fetch(`/api/admin/obras?id=${id}`, { method: 'DELETE', headers: { 'x-admin-password': pass } });
+    await apiFetch(`/api/admin/obras?id=${id}`, { method: 'DELETE', headers: { 'x-admin-password': pass } });
     cargarObras();
   };
 
