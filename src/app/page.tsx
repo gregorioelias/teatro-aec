@@ -208,16 +208,21 @@ export default function Home() {
               <div style={{ fontSize: 13, fontWeight: 600 }}>{fmt(obra.precio)} / entrada</div>
               <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink3)', marginBottom: 7 }}>Elegí una fecha</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                {obra.funciones.map(f => (
-                  <button key={f.id} onClick={() => setPicked(p => ({ ...p, [obra.id]: f.id }))}
-                    style={{ fontFamily: 'inherit', fontSize: 13, border: `1px solid ${picked[obra.id] === f.id ? 'var(--red)' : 'var(--bd)'}`, borderRadius: 6, padding: '6px 10px', background: picked[obra.id] === f.id ? 'color-mix(in srgb,var(--red) 8%,var(--bg))' : 'var(--bg)', color: picked[obra.id] === f.id ? 'var(--red)' : 'var(--ink2)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                    <span style={{ fontWeight: 600, color: picked[obra.id] === f.id ? 'var(--red)' : 'var(--ink)' }}>{f.fecha}</span>
-                    <span style={{ fontSize: 11, color: picked[obra.id] === f.id ? 'var(--red)' : 'var(--ink3)' }}>{f.hora}</span>
-                  </button>
-                ))}
+                {obra.funciones.map(f => {
+                  const obraKey = Number(obra.id);
+                  const funcId = Number(f.id);
+                  const isSelected = picked[obraKey] === funcId;
+                  return (
+                    <button key={funcId} onClick={() => setPicked(p => ({ ...p, [obraKey]: funcId }))}
+                      style={{ fontFamily: 'inherit', fontSize: 13, border: `1px solid ${isSelected ? 'var(--red)' : 'var(--bd)'}`, borderRadius: 6, padding: '6px 10px', background: isSelected ? 'color-mix(in srgb,var(--red) 8%,var(--bg))' : 'var(--bg)', color: isSelected ? 'var(--red)' : 'var(--ink2)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                      <span style={{ fontWeight: 600, color: isSelected ? 'var(--red)' : 'var(--ink)' }}>{f.fecha}</span>
+                      <span style={{ fontSize: 11, color: isSelected ? 'var(--red)' : 'var(--ink3)' }}>{f.hora}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <button disabled={!picked[obra.id]} onClick={() => { const f = obra.funciones.find(fn => fn.id === picked[obra.id])!; irAMapa(obra, f); }}
-                style={{ fontFamily: 'inherit', fontSize: 14, fontWeight: 600, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, cursor: picked[obra.id] ? 'pointer' : 'not-allowed', opacity: picked[obra.id] ? 1 : .35, marginTop: 4 }}>
+              <button disabled={!picked[Number(obra.id)]} onClick={() => { const f = obra.funciones.find(fn => Number(fn.id) === picked[Number(obra.id)])!; irAMapa(obra, f); }}
+                style={{ fontFamily: 'inherit', fontSize: 14, fontWeight: 600, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, cursor: picked[Number(obra.id)] ? 'pointer' : 'not-allowed', opacity: picked[Number(obra.id)] ? 1 : .35, marginTop: 4 }}>
                 Ver mapa de butacas →
               </button>
             </div>
