@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { headers } from 'next/headers';
+import { verifyAdminToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
-function checkAuth(h: Awaited<ReturnType<typeof headers>>) {
-  return h.get('x-admin-password') === process.env.ADMIN_PASSWORD;
+async function checkAuth() {
+  const jar = await cookies();
+  const token = jar.get('admin_token')?.value;
+  if (!token) return false;
+  return verifyAdminToken(token);
 }
 
 export async function POST(req: Request) {
-  const h = await headers();
-  if (!checkAuth(h)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!(await checkAuth())) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const body = await req.json();
   const { titulo, genero, descripcion, duracion, precio, funciones } = body;
@@ -38,8 +41,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const h = await headers();
-  if (!checkAuth(h)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!(await checkAuth())) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
