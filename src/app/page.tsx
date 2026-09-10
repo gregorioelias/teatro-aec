@@ -5,12 +5,12 @@ import { apiFetch } from '@/lib/fetcher';
 type Funcion = { id: number; fecha: string; hora: string; capacidad: number };
 type Obra = {
   id: number; titulo: string; genero: string; descripcion: string;
-  duracion: string; precio: number; ocupacion_base: number; funciones: Funcion[];
+  duracion: string; precio: number; funciones: Funcion[];
 };
 
 const ROWS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','BB','CC','DD'];
 const COLS = 15, AISLE = 8;
-const SW = 13, SH = 18, AH = 8, HS = 17, VS = 24, AG = 18, LW = 22, TH = 18;
+const SW = 16, SH = 21, AH = 9, HS = 21, VS = 28, AG = 20, LW = 28, TH = 22;
 
 function fmt(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
@@ -27,11 +27,6 @@ function seatY(r: number) { return TH + r * VS; }
 function svgW() { return seatX(COLS) + SW / 2 + LW + 6; }
 function svgH() { return seatY(ROWS.length - 1) + SH / 2 + 12; }
 
-function h(s: string) {
-  let v = 5381;
-  for (let i = 0; i < s.length; i++) { v = ((v << 5) + v) + s.charCodeAt(i); v |= 0; }
-  return Math.abs(v);
-}
 
 export default function Home() {
   const [obras, setObras] = useState<Obra[]>([]);
@@ -131,20 +126,20 @@ export default function Home() {
     const W = svgW(), H = svgH();
     const elements: React.ReactNode[] = [];
 
-    [1, AISLE, AISLE + 1, COLS].forEach(s => {
-      elements.push(<text key={`nh-${s}`} x={seatX(s)} y={TH - 5} style={{ fontFamily: 'monospace', fontSize: 8, fill: 'var(--ink3)', textAnchor: 'middle' }}>{s}</text>);
-    });
+    for (let s = 1; s <= COLS; s++) {
+      elements.push(<text key={`nh-${s}`} x={seatX(s)} y={TH - 6} style={{ fontFamily: 'monospace', fontSize: 9, fill: 'var(--ink3)', textAnchor: 'middle', fontWeight: 600 }}>{s}</text>);
+    }
 
     ROWS.forEach((row, ri) => {
       const cy = seatY(ri);
       elements.push(
-        <text key={`rl-${row}`} x={LW - 4} y={cy + SH / 2 - 3} style={{ fontFamily: 'monospace', fontSize: 8, fill: 'var(--ink3)', textAnchor: 'end' }}>{row}</text>,
-        <text key={`rr-${row}`} x={W - 3} y={cy + SH / 2 - 3} style={{ fontFamily: 'monospace', fontSize: 8, fill: 'var(--ink3)', textAnchor: 'start' }}>{row}</text>,
+        <text key={`rl-${row}`} x={LW - 6} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
+        <text key={`rr-${row}`} x={W - 2} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'start', fontWeight: 700 }}>{row}</text>,
       );
 
       for (let s = 1; s <= COLS; s++) {
         const id = `${row}-${s}`;
-        const occ = ocupadas.has(id) || (curObra && h(String(curObra.id) + String(curFuncion?.id) + id) % 100 < Math.round(curObra.ocupacion_base * 100));
+        const occ = ocupadas.has(id);
         const selected = sel.has(id);
         const state = occ ? 'occupied' : selected ? 'selected' : 'available';
         const cx = seatX(s);
