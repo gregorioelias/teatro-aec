@@ -10,7 +10,7 @@ type Obra = {
 
 const ROWS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','BB','CC','DD'];
 const COLS = 15, AISLE = 8;
-const SW = 16, SH = 20, AH = 9, HS = 22, VS = 28, AG = 22, LW = 36, TH = 24;
+const SW = 16, SH = 20, AH = 9, HS = 22, VS = 27, AG = 22, LW = 8, TH = 24;
 
 function fmt(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
@@ -24,7 +24,7 @@ function formatFecha(s: string) {
 }
 function seatX(s: number) { return LW + (s - 1) * HS + (s > AISLE ? AG : 0); }
 function seatY(r: number) { return TH + r * VS; }
-function svgW() { return seatX(COLS) + SW / 2 + LW + 2; }
+function svgW() { return seatX(COLS) + SW / 2 + 30; }
 function svgH() { return seatY(ROWS.length - 1) + SH / 2 + 14; }
 
 
@@ -133,8 +133,7 @@ export default function Home() {
     ROWS.forEach((row, ri) => {
       const cy = seatY(ri);
       elements.push(
-        <text key={`rl-${row}`} x={LW - 6} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
-        <text key={`rr-${row}`} x={W - 2} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
+        <text key={`rr-${row}`} x={W - 4} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
       );
 
       for (let s = 1; s <= COLS; s++) {
@@ -162,7 +161,7 @@ export default function Home() {
       }
     });
 
-    return <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block' }}>{elements}</svg>;
+    return <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${W} ${H}`} width={W} height={H}>{elements}</svg>;
   };
 
   const selArr = Array.from(sel).sort((a, b) => {
