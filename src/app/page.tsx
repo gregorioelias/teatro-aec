@@ -393,18 +393,22 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
   const crearObra = async () => {
     if (!form.titulo || !form.precio) { setMsg('Error: completá título y precio'); return; }
     if (form.funciones.some(f => !f.fecha || !f.hora)) { setMsg('Error: completá fecha y hora de todas las funciones'); return; }
-    const res = await fetch('/api/admin/obras', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-password': pass },
-      body: JSON.stringify({ ...form, precio: Number(form.precio), funciones: form.funciones.map(f => ({ ...f, capacidad: Number(f.capacidad) })) }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setMsg('Obra creada exitosamente');
-      setForm({ titulo: '', genero: '', descripcion: '', duracion: '', precio: '', funciones: [{ fecha: '', hora: '', capacidad: '450' }] });
-      cargarObras();
-    } else {
-      setMsg('Error: ' + (data.error || 'no se pudo crear la obra'));
+    try {
+      const res = await fetch('/api/admin/obras', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': pass },
+        body: JSON.stringify({ ...form, precio: Number(form.precio), funciones: form.funciones.map(f => ({ ...f, capacidad: Number(f.capacidad) })) }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMsg('Obra creada exitosamente');
+        setForm({ titulo: '', genero: '', descripcion: '', duracion: '', precio: '', funciones: [{ fecha: '', hora: '', capacidad: '450' }] });
+        cargarObras();
+      } else {
+        setMsg('Error: ' + (data.error || 'no se pudo crear la obra'));
+      }
+    } catch (e) {
+      setMsg('Error de red: ' + String(e));
     }
   };
 
@@ -524,7 +528,7 @@ function AdminPanel({ onBack }: { onBack: () => void }) {
 
       {tab === 'nueva' && (
         <div style={{ maxWidth: 560 }}>
-          {msg && <div style={{ padding: '12px 16px', background: msg.includes('Error') ? '#FEE2E2' : '#D1FAE5', borderRadius: 8, marginBottom: 16, fontSize: 13 }}>{msg}</div>}
+          {msg && <div style={{ padding: '12px 16px', background: msg.includes('Error') ? '#FEE2E2' : '#D1FAE5', color: msg.includes('Error') ? '#991B1B' : '#065F46', borderRadius: 8, marginBottom: 16, fontSize: 13, fontWeight: 500 }}>{msg}</div>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <input placeholder="Título de la obra" value={form.titulo} onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))} style={inp()} />
             <input placeholder="Género (ej: Teatro · Drama)" value={form.genero} onChange={e => setForm(f => ({ ...f, genero: e.target.value }))} style={inp()} />
