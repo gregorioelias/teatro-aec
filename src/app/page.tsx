@@ -42,7 +42,6 @@ export default function Home() {
   const [picked, setPicked] = useState<Record<number, number>>({});
   const [confirmacion, setConfirmacion] = useState<{ codigo: string; total: number; butacas: string[] } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [comprador, setComprador] = useState({ nombre: '', email: '' });
 
@@ -166,7 +165,6 @@ export default function Home() {
 
   const avail = ROWS.length * COLS - ocupadas.size - sel.size;
 
-  if (showAdmin) return <AdminPanel onBack={() => setShowAdmin(false)} />;
 
   const modalInp: React.CSSProperties = { width: '100%', padding: '10px 12px', border: '1px solid var(--bd)', borderRadius: 8, fontSize: 14, background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'inherit' };
 
@@ -178,9 +176,6 @@ export default function Home() {
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', opacity: .9 }}>AEC Rosario</span>
           <span style={{ width: 1, height: 14, background: 'rgba(255,255,255,.3)' }} />
           <span style={{ fontSize: 11, opacity: .65, letterSpacing: '.06em' }}>Asociación Empleados de Comercio · Corrientes 450</span>
-          <button onClick={() => setShowAdmin(true)} style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(255,255,255,.15)', color: '#fff', border: '1px solid rgba(255,255,255,.35)', borderRadius: 5, padding: '4px 12px', cursor: 'pointer' }}>
-            Panel Admin
-          </button>
         </div>
         <div style={{ paddingBottom: 18, borderBottom: '1px solid var(--bd)' }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 5 }}>Teatro · Reservas en línea</div>
