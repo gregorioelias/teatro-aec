@@ -43,12 +43,22 @@ export default function Home() {
   const [picked, setPicked] = useState<Record<number, number>>({});
   const [confirmacion, setConfirmacion] = useState<{ codigo: string; total: number; butacas: string[] } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [comprador, setComprador] = useState({ nombre: '', email: '' });
 
   useEffect(() => {
     apiFetch('/api/init').catch(() => {});
-    apiFetch('/api/obras').then(r => r.json()).then(setObras).catch(console.error);
+    apiFetch('/api/obras')
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error('Respuesta inválida: ' + JSON.stringify(data).slice(0, 100));
+        setObras(data);
+      })
+      .catch(e => setLoadError(String(e)));
   }, []);
 
   const cargarButacas = useCallback(async (funcionId: number) => {
@@ -201,6 +211,8 @@ export default function Home() {
       {/* step 1 */}
       {step === 1 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(290px,1fr))', gap: 18 }}>
+          {loadError && <div style={{ gridColumn: '1/-1', padding: 16, background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, color: '#991b1b', fontSize: 13 }}>Error cargando funciones: {loadError}</div>}
+          {!loadError && obras.length === 0 && <div style={{ gridColumn: '1/-1', color: 'var(--ink3)', fontSize: 14, padding: '24px 0' }}>Cargando...</div>}
           {obras.map(obra => (
             <div key={obra.id} style={{ background: 'var(--bg-c)', border: '1px solid var(--bd)', borderRadius: 12, padding: 22, display: 'flex', flexDirection: 'column', gap: 13 }}>
               <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--red)' }}>{obra.genero}</div>
