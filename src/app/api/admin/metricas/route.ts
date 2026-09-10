@@ -47,7 +47,7 @@ export async function GET() {
       ORDER BY f.fecha ASC
     `),
     db.execute(`
-      SELECT r.codigo, r.creado_en, r.butacas, r.cantidad, r.total, r.nombre, r.email, r.estado, o.titulo, f.fecha, f.hora
+      SELECT r.id, r.codigo, r.creado_en, r.butacas, r.cantidad, r.total, r.nombre, r.email, r.estado, o.titulo, f.fecha, f.hora
       FROM reservas r
       JOIN funciones f ON f.id = r.funcion_id
       JOIN obras o ON o.id = f.obra_id

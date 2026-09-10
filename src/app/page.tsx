@@ -46,14 +46,12 @@ export default function Home() {
   const [comprador, setComprador] = useState({ nombre: '', email: '' });
 
   useEffect(() => {
-    const h = { 'ngrok-skip-browser-warning': 'true' };
-    fetch('/api/init', { headers: h }).then(() =>
-      fetch('/api/obras', { headers: h }).then(r => r.json()).then(setObras).catch(console.error)
-    );
+    fetch('/api/init').catch(() => {});
+    fetch('/api/obras').then(r => r.json()).then(setObras).catch(console.error);
   }, []);
 
   const cargarButacas = useCallback(async (funcionId: number) => {
-    const res = await fetch(`/api/butacas?funcion_id=${funcionId}`, { headers: { 'ngrok-skip-browser-warning': 'true' } });
+    const res = await fetch(`/api/butacas?funcion_id=${funcionId}`);
     const data: string[] = await res.json();
     setOcupadas(new Set(data));
   }, []);

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 type Totales = { total_reservas: number; total_entradas: number; total_ingresos: number };
 type ObraMetrica = { id: number; titulo: string; precio: number; funciones: number; entradas: number; ingresos: number; ocupacion: number };
 type FuncionMetrica = { id: number; fecha: string; hora: string; capacidad: number; titulo: string; vendidas: number; ingresos: number; ocupacion: number };
-type Reserva = { codigo: string; creado_en: string; butacas: string; cantidad: number; total: number; nombre: string | null; email: string | null; estado: string; titulo: string; fecha: string; hora: string };
+type Reserva = { id: number; codigo: string; creado_en: string; butacas: string; cantidad: number; total: number; nombre: string | null; email: string | null; estado: string; titulo: string; fecha: string; hora: string };
 type DiaMetrica = { dia: string; reservas: number; entradas: number; ingresos: number };
 type FormFuncion = { fecha: string; hora: string; capacidad: string };
 type Form = { titulo: string; genero: string; descripcion: string; duracion: string; precio: string; funciones: FormFuncion[] };
@@ -101,6 +101,11 @@ export default function AdminPanel() {
   }, [router]);
 
   useEffect(() => { cargar(); }, [cargar]);
+
+  const confirmarReserva = async (id: number) => {
+    await fetch('/api/admin/confirmar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reserva_id: id }) });
+    cargar();
+  };
 
   const logout = async () => {
     await fetch('/api/admin/auth', { method: 'DELETE' });
@@ -310,6 +315,7 @@ export default function AdminPanel() {
                     <th style={{ ...th, textAlign: 'right' }}>Total</th>
                     <th style={th}>Estado</th>
                     <th style={th}>Fecha reserva</th>
+                    <th style={th}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -334,11 +340,19 @@ export default function AdminPanel() {
                           </span>
                         </td>
                         <td style={td({ fontSize: 12, color: '#6b7280' })}>{fmtTs(r.creado_en)}</td>
+                        <td style={td()}>
+                          {r.estado === 'pendiente' && (
+                            <button onClick={() => confirmarReserva(r.id)}
+                              style={{ fontSize: 11, color: '#22c55e', background: 'transparent', border: '1px solid #22c55e', borderRadius: 5, padding: '3px 8px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                              ✓ Confirmar
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     );
                   })}
                   {!ultimasReservas.length && (
-                    <tr><td colSpan={7} style={{ ...td(), textAlign: 'center', color: '#4b5563', padding: '24px 12px' }}>Sin reservas aún</td></tr>
+                    <tr><td colSpan={8} style={{ ...td(), textAlign: 'center', color: '#4b5563', padding: '24px 12px' }}>Sin reservas aún</td></tr>
                   )}
                 </tbody>
               </table>
