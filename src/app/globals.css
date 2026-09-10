@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --bg:#F0F4FB;--bg-c:#FFFFFF;--bg-m:#EBF1FA;--bd:#C8D8EE;
+  --ink:#0E1840;--ink2:#3A527A;--ink3:#7A90B0;
+  --red:#162264;--red2:#0E1840;--gold:#3876C0;--gold2:#4A88D0;
+  --sb:#7A9EC4;--ss:#C0D4EC;--sk:#5A86B4;
+  --xb:#1B4A9C;--xs:#3876C0;--xk:#162264;
+  --ob:#B4C2D0;--os:#D0DCEA;--ok:#9AAEC0;
+}
+
+@media(prefers-color-scheme:dark){:root{
+  --bg:#090E1E;--bg-c:#101828;--bg-m:#0C1422;--bd:#1C2E48;
+  --ink:#D8E8FA;--ink2:#7A98C0;--ink3:#4A6888;
+  --red:#4A80D4;--red2:#5A90E4;--gold:#5A90D8;--gold2:#6AA0E8;
+  --sb:#1A2E44;--ss:#243A58;--sk:#2E4A68;
+  --xb:#1B4A9C;--xs:#3876C0;--xk:#4A88D0;
+  --ob:#182030;--os:#1E2A3C;--ok:#243244;
+}}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
