@@ -10,7 +10,7 @@ type Obra = {
 
 const ROWS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','BB','CC','DD'];
 const COLS = 15, AISLE = 8;
-const SW = 16, SH = 21, AH = 9, HS = 21, VS = 28, AG = 20, LW = 28, TH = 22;
+const SW = 16, SH = 20, AH = 9, HS = 22, VS = 28, AG = 22, LW = 36, TH = 24;
 
 function fmt(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
@@ -24,8 +24,8 @@ function formatFecha(s: string) {
 }
 function seatX(s: number) { return LW + (s - 1) * HS + (s > AISLE ? AG : 0); }
 function seatY(r: number) { return TH + r * VS; }
-function svgW() { return seatX(COLS) + SW / 2 + LW + 6; }
-function svgH() { return seatY(ROWS.length - 1) + SH / 2 + 12; }
+function svgW() { return seatX(COLS) + SW / 2 + LW + 2; }
+function svgH() { return seatY(ROWS.length - 1) + SH / 2 + 14; }
 
 
 export default function Home() {
@@ -134,7 +134,7 @@ export default function Home() {
       const cy = seatY(ri);
       elements.push(
         <text key={`rl-${row}`} x={LW - 6} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
-        <text key={`rr-${row}`} x={W - 2} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'start', fontWeight: 700 }}>{row}</text>,
+        <text key={`rr-${row}`} x={W - 2} y={cy + SH / 2 - 2} style={{ fontFamily: 'monospace', fontSize: 10, fill: 'var(--ink2)', textAnchor: 'end', fontWeight: 700 }}>{row}</text>,
       );
 
       for (let s = 1; s <= COLS; s++) {
@@ -162,7 +162,7 @@ export default function Home() {
       }
     });
 
-    return <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${W} ${H}`} width={W} height={H}>{elements}</svg>;
+    return <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block' }}>{elements}</svg>;
   };
 
   const selArr = Array.from(sel).sort((a, b) => {
@@ -253,7 +253,7 @@ export default function Home() {
               <button onClick={() => { setSel(new Set()); setStep(1); }} style={{ fontFamily: 'inherit', fontSize: 13, color: 'var(--red)', background: 'none', border: '1px solid var(--red)', borderRadius: 6, padding: '5px 11px', cursor: 'pointer' }}>← Volver</button>
             </div>
             <div style={{ textAlign: 'center', fontSize: 10, fontWeight: 700, letterSpacing: '.22em', textTransform: 'uppercase', color: '#fff', padding: 7, borderRadius: '5px 5px 0 0', background: '#162264' }}>Escenario</div>
-            <div style={{ overflow: 'auto', maxHeight: 490, padding: '10px 6px 6px', border: '1px solid var(--bd)', borderTop: 'none', borderRadius: '0 0 6px 6px', background: 'var(--bg-m)' }}>
+            <div style={{ overflowX: 'auto', padding: '10px 8px 8px', border: '1px solid var(--bd)', borderTop: 'none', borderRadius: '0 0 6px 6px', background: 'var(--bg-m)' }}>
               {renderMap()}
             </div>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--bd)' }}>
